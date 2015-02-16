@@ -1,0 +1,1 @@
+asciidoctor -D ../ -a stylesheet=..\stylesheets\github.css -a source-highlighter=highlightjs json-aanlevering.adoc

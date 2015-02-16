@@ -14,14 +14,14 @@ Aanlevering is gebaseerd op het volgende:
 == Aanlevering
 De aanlevering geschied in 1 bestand:
 
-[source, json]
+[source, json, subs="macros"]
 ----
 {
     "_meta": {
              // hier zijn we nog niet helemaal overuit, maar een beetje meta data zou handig kunnen zijn
     },
     "dataset": "dataset-identifier",
-    "features" : [ _feature objects_ ]
+    "features" : pass:quotes[[ _feature objects_ ]]
 }
 ----
 
@@ -37,6 +37,7 @@ _validity:: datetimestring, geldigheid vanaf tijdstip
 _geometry:: geojson object, uitgebreid met PDOK specifieke implementaties.
 
 Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies.
+
 .Beschikbare functies
 [horizontal]
 moment:: args: datetimestring -> creëert datum
@@ -68,7 +69,7 @@ Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionalitiet voo
                },
     "een_datum_veld": moment("2012-04-23T18:25:43.511Z"),
     "vrij_veld_1": "ik ben een punt",
-    "vrij_veld_2:"  "ik ben een lijn",
+    "vrij_veld_2":  "ik ben een lijn",
       .
       .
       .
