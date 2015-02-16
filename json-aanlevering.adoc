@@ -1,0 +1,239 @@
+= PDOK JSON
+Raymond Kroon <raymond.kroon@kadaster.nl>
+v0.1 2015-02-16
+
+De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
+
+Aanlevering is gebaseerd op het volgende:
+
+* basis van alles is een *feature*
+* features van 1 type zitten in 1 *collection*
+* features hebben *1 geometry* en verder platte properties
+* van features worden history bij gehouden
+
+== Aanlevering
+De aanlevering geschied in 1 bestand:
+
+[source, json]
+----
+{
+    "_meta": {
+             // hier zijn we nog niet helemaal overuit, maar een beetje meta data zou handig kunnen zijn
+    },
+    "dataset": "dataset-identifier",
+    "features" : [ _feature objects_ ]
+}
+----
+
+== Features
+Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop underscore (_)
+
+.Verplichte velden
+[horizontal]
+_action:: new, change, close, delete
+_id:: uniek in _collection, string
+_collection:: string
+_validity:: datetimestring, geldigheid vanaf tijdstip
+_geometry:: geojson object, uitgebreid met PDOK specifieke implementaties.
+
+Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies.
+.Beschikbare functies
+[horizontal]
+moment:: args: datetimestring -> creëert datum
+remove:: args: __geen__ -> verwijderd veld in change.
+link:: args: collection, id -> linkt een feature
+
+=== _geometry
+De bedoeling is om alle types op http://geojson.org/geojson-spec.html#geometry-objects. *Dit doen we nu nog niet.*
+
+Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionalitiet voor gml. Deze accepteerd een gml geometry string.
+[source, json]
+----
+"_geom": { "type": "gml",
+           "gml": "<gml:Polygon|Point|Linestring ... > ... </gml:Polygon|Point|Linestring| ...>"
+         }
+----
+
+=== _action: "new"
+
+[source, json]
+----
+{
+    "_action": "new",
+    "_id": "abc",
+    "_collection": "voorbeeld_verzameling",
+    "_validity": "2010-01-01T00:00:00.000Z",
+    "_geometry": { "type": "gml",
+               "gml": "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::28992\"><gml:pos>000150.000 000380.000</gml:pos></gml:Point>"
+               },
+    "een_datum_veld": moment("2012-04-23T18:25:43.511Z"),
+    "vrij_veld_1": "ik ben een punt",
+    "vrij_veld_2:"  "ik ben een lijn",
+      .
+      .
+      .
+
+}
+----
+
+=== _action: "change"
+Aanvullend verplicht veld bij een _change_ is *_current_validity* Deze timestring moet gelijk zijn aan de huidige ___validity__.
+
+NOTE: Een change aanbieden sluit de huidige periode en start een nieuwe.
+
+*Alleen meegevulde velden worden gewijzigd*
+
+[source, json]
+----
+{
+    "_action": "update",
+    "_id": "abc",
+    "_collection": "voorbeeld_verzameling",
+    "_validity": "2011-01-01T00:00:00.000Z",
+    "_current_validity": "2010-01-01T00:00:00.000Z",
+    "vrij_veld_1": "Ik ben een Point",
+    "vrij_veld_2": remove() ,
+     .
+     .
+     .
+
+}
+----
+
+=== _action: "close"
+_validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *close* om de feature af te sluiten.
+
+[source, json]
+----
+{
+    "_action": "close",
+    "_id": "abc",
+    "_collection": "voorbeeld_verzameling",
+    "_validity": "2012-01-01T00:00:00.000Z", # <1>
+    "_current_validity": "2011-01-01T00:00:00.000Z"
+}
+----
+
+<1> Dit is de "sluitingsdatum"
+
+=== _action: "delete"
+Als er een fout gemaakt is in het verleden kan hiermee de feature gereset worden, zodat alles weer opnieuw aangeboden kan worden.
+
+[source, json]
+----
+{
+    "_action": "delete",
+    "_id": "abc",
+    "_collection": "voorbeeld_verzameling",
+    "_current_validity": "2012-01-01T00:00:00.000Z"
+}
+----
+
+== Gelinkte collecties
+Om relaties vast te leggen tussen features in verschillende collecties, kunnen ___parent_collection__ en ___parent_id__ vastgelegd worden.
+
+[source, json]
+----
+{
+    "_action": "new",
+    "_id": "child-id",
+    "_collection": "child_verzameling",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "_parent_collection": "voorbeeld_verzameling",
+    "_parent_id": "abc"
+}
+----
+
+IMPORTANT: De parent collectie moet al bestaan anders werkt het linken niet.
+
+Deze manier van linken ondersteund alleen alleen 1 - n, daarom kunnen features gelinked worden met link().
+
+[source, json]
+----
+{
+    "_action": "new",
+    "_id": "xyz",
+    "_collection": "vooprbeeld_verzameling_2",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "linked_item": link("voorbeeld_verzameling", "abc"),
+     .
+     .
+     .
+}
+----
+
+Dit mag een array zijn.
+
+[source, json]
+----
+{
+    "_action": "new",
+    "_id": "xyz",
+    "_collection": "voorbeeld_verzameling_2",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "linked_items": [link("voorbeeld_verzameling", "abc"), link(... ],
+     .
+     .
+     .
+}
+----
+
+IMPORTANT: De links moeten al bestaan op het moment van linken.
+
+== Nested features
+Linken van collecties vereist dat alle element een *_collection* en *_id* hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is altijd een array van objecten.
+
+[source, json]
+----
+{
+    "_action": "new",
+    "_id": "klm",
+    "_collection": "nested_parent",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "child_object": [{ "omschrijving": "ik ben genest",
+                       "_geometry": { ... }
+                     }]
+     "_geometry": { ... },
+     "parent_info": "extra informatie"
+}
+----
+
+Op de achtergrond worden de geneste objecten in een eigen collectie gestopt.
+
+[source, json]
+----
+{
+    "_action": "new",
+    "_id": "[uid]",
+    "_collection": "nested_parent$child_object",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "_parent_collection": "nested_parent",
+    "_parent_id": "klm",
+    "omschrijving": "ik ben genest",
+    "_geometry": { ... }
+}
+----
+
+IMPORTANT: Bij een *change* van het *child_object* worden alle _huidige nested features_ gesloten en worden de nieuwe aangemaakt.
+
+== Feature zonder _geometry
+Een feature moet altijd een geometry hebben, echter in sommige gevallen is het wenselijk om dit in een nested feature te stoppen.
+
+NOTE: Het is mogelijk om geen geometry toe te voegen. Er moet dan wel een nested feature zijn die wel een geometry heeft.
+
+Als het voorbeeld in <<Nested features>> geen _geometry zou hebben, dan zou op de achtergrond het volgende gebeuren.
+
+[source, json, subs="verbatim,macros"]
+----
+{
+    "_action": "new",
+    "_id": "klm$[uid]",
+    "_collection": "nested_parent$child_object",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "omschrijving": "ik ben genest",
+    "_geometry": { ... },
+    pass:quotes[*"nested_parent$parent_info": "extra informatie"*]
+}
+----
+
+IMPORTANT: Bij een *change* worden alle gecreëerde features gewijzigd.
