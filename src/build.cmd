@@ -1,2 +1,1 @@
-asciidoctor -D ../ -a stylesheet=..\stylesheets\github.css -a source-highlighter=highlightjs index.adoc
-asciidoctor -D ../ -a stylesheet=..\stylesheets\github.css -a source-highlighter=highlightjs json-aanlevering.adoc
+for /r %%v in (*.adoc) do asciidoctor -D ../ -a stylesheet=..\stylesheets\github.css -a source-highlighter=highlightjs "%%v"
