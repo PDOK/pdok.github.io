@@ -6,10 +6,10 @@ De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
 Aanlevering is gebaseerd op het volgende:
 
-* basis van alles is een *feature*
-* features van 1 type zitten in 1 *collection*
-* features hebben *1 geometry* en verder platte properties
-* van features worden history bij gehouden
+* Basis van alles is een *feature*
+* Een *collection* is een verzameling van features die eenzelfde soort object (bijv. panden) beschrijven. Het is handig om dezelfde veldnamen te gebruiken, al zitten hier vooralsnog geen beperkingen op.
+* Features hebben *1 geometry* en verder platte properties
+* Van features worden history bij gehouden (in het geval van wijzigingen)
 
 == Aanlevering
 De aanlevering geschied in 1 bestand:
@@ -41,7 +41,6 @@ Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek
 .Beschikbare functies
 [horizontal]
 moment:: args: datetimestring -> creëert datum
-remove:: args: __geen__ -> verwijderd veld in change.
 link:: args: collection, id -> linkt een feature
 
 === _geometry
@@ -93,13 +92,15 @@ NOTE: Een change aanbieden sluit de huidige periode en start een nieuwe.
     "_validity": "2011-01-01T00:00:00.000Z",
     "_current_validity": "2010-01-01T00:00:00.000Z",
     "vrij_veld_1": "Ik ben een Point",
-    "vrij_veld_2": remove() ,
+    "vrij_veld_2": null , # <1>
      .
      .
      .
 
 }
 ----
+
+<1> Als je een veld wilt verwijderen kun je hem op __null__ zetten.
 
 === _action: "close"
 _validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *close* om de feature af te sluiten.
@@ -116,6 +117,8 @@ _validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *clo
 ----
 
 <1> Dit is de "sluitingsdatum"
+
+IMPORTANT: Na een close kan een object niet meer gemuteerd worden.
 
 === _action: "delete"
 Als er een fout gemaakt is in het verleden kan hiermee de feature gereset worden, zodat alles weer opnieuw aangeboden kan worden.
@@ -238,3 +241,56 @@ Als het voorbeeld in <<Nested features>> geen _geometry zou hebben, dan zou op d
 ----
 
 IMPORTANT: Bij een *change* worden alle gecreëerde features gewijzigd.
+
+== Feature historie
+Gebruik makend van het *_validity* attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.
+
+* Een feature is geldig vanaf de validity datum bij het aanmaken (__new__). Dit is _"versie 1"_.
+* Bij een change wordt versie 1 afgesloten en gaat de nieuwe versie in, oftewel _"versie 2"_.
+* Dit kan een aantal keer door gaan. Elke keer resulterend in een afgesloten huidige en geopende nieuwe versie.
+* Als laatste kan een feature gesloten (*close*) worden. Hierna is een feature niet meer beschikbaar.
+
+[source, json]
+----
+{
+    "_action": "new",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_validity": "[t1]"
+    "value": "foo"
+}
+
+{
+    "_action": "change",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t1]",
+    "_validity": "[t2]"
+    "value": "bar"
+}
+
+{
+    "_action": "change",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t2]",
+    "_validity": "[t3]"
+    "value": "baz"
+}
+
+{
+    "_action": "close",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t3]",
+    "_validity": "[t4]"
+}
+----
+
+Dit resulteert in de volgende historie:
+
+----
+    t1           t2               t3           t4
+-----|------------|----------------|------------|-------------->
+ X     value=foo      value=bar       value=baz       X
+----
