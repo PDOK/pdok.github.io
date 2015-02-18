@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.1 2015-02-16
+v0.2 2015-02-18
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -36,12 +36,18 @@ _collection:: string
 _validity:: datetimestring, geldigheid vanaf tijdstip
 _geometry:: geojson object, uitgebreid met PDOK specifieke implementaties.
 
-Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies.
+Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies
+
+=== Functies
+Een functie is eigenlijk een voorgedefinieerd type. Je gebruikt het als volgt:
+----
+["~#functienaam": [param1, param2, ...]]
+----
 
 .Beschikbare functies
 [horizontal]
-moment:: args: datetimestring -> creëert datum
-link:: args: collection, id -> linkt een feature
+moment:: datetimestring -> datetime obj
+link:: collection, id -> featurelink
 
 === _geometry
 De bedoeling is om alle types op http://geojson.org/geojson-spec.html#geometry-objects. *Dit doen we nu nog niet.*
@@ -66,7 +72,7 @@ Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionalitiet voo
     "_geometry": { "type": "gml",
                "gml": "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::28992\"><gml:pos>000150.000 000380.000</gml:pos></gml:Point>"
                },
-    "een_datum_veld": moment("2012-04-23T18:25:43.511Z"),
+    "een_datum_veld": ["~#moment", ["2012-04-23T18:25:43.511Z"]],
     "vrij_veld_1": "ik ben een punt",
     "vrij_veld_2":  "ik ben een lijn",
       .
@@ -159,7 +165,7 @@ Deze manier van linken ondersteund alleen alleen 1 - n, daarom kunnen features g
     "_id": "xyz",
     "_collection": "vooprbeeld_verzameling_2",
     "_validity": "2012-01-01T00:00:00.000Z"
-    "linked_item": link("voorbeeld_verzameling", "abc"),
+    "linked_item": ["~#link",["voorbeeld_verzameling", "abc"]],
      .
      .
      .
@@ -175,7 +181,7 @@ Dit mag een array zijn.
     "_id": "xyz",
     "_collection": "voorbeeld_verzameling_2",
     "_validity": "2012-01-01T00:00:00.000Z"
-    "linked_items": [link("voorbeeld_verzameling", "abc"), link(... ],
+    "linked_items": ["~#link" ["collectie1", "id1", "collectie2", "id2", ...]],
      .
      .
      .

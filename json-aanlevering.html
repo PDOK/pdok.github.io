@@ -711,7 +711,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="details">
 <span id="author" class="author">Raymond Kroon</span><br>
 <span id="email" class="email"><a href="mailto:raymond.kroon@kadaster.nl">raymond.kroon@kadaster.nl</a></span><br>
-<span id="revdate">v0.1 2015-02-16</span>
+<span id="revdate">v0.2 2015-02-18</span>
 </div>
 </div>
 <div id="content">
@@ -812,7 +812,17 @@ _geometry
 </table>
 </div>
 <div class="paragraph">
-<p>Daarnaast zijn er vrije velden. Dit mogen alleen simple types (<em>string, numeriek, boolean</em>) zijn of voorgedefinieerde functies.</p>
+<p>Daarnaast zijn er vrije velden. Dit mogen alleen simple types (<em>string, numeriek, boolean</em>) zijn of voorgedefinieerde functies</p>
+</div>
+<div class="sect2">
+<h3 id="_functies">Functies</h3>
+<div class="paragraph">
+<p>Een functie is eigenlijk een voorgedefinieerd type. Je gebruikt het als volgt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>["~#functienaam": [param1, param2, ...]]</pre>
+</div>
 </div>
 <div class="hdlist">
 <div class="title">Beschikbare functies</div>
@@ -822,7 +832,7 @@ _geometry
 moment
 </td>
 <td class="hdlist2">
-<p>args: datetimestring &#8594; creëert datum</p>
+<p>datetimestring &#8594; datetime obj</p>
 </td>
 </tr>
 <tr>
@@ -830,10 +840,11 @@ moment
 link
 </td>
 <td class="hdlist2">
-<p>args: collection, id &#8594; linkt een feature</p>
+<p>collection, id &#8594; featurelink</p>
 </td>
 </tr>
 </table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="__geometry">_geometry</h3>
@@ -863,7 +874,7 @@ link
     "_geometry": { "type": "gml",
                "gml": "&lt;gml:Point srsName=\"urn:ogc:def:crs:EPSG::28992\"&gt;&lt;gml:pos&gt;000150.000 000380.000&lt;/gml:pos&gt;&lt;/gml:Point&gt;"
                },
-    "een_datum_veld": moment("2012-04-23T18:25:43.511Z"),
+    "een_datum_veld": ["~#moment", ["2012-04-23T18:25:43.511Z"]],
     "vrij_veld_1": "ik ben een punt",
     "vrij_veld_2":  "ik ben een lijn",
       .
@@ -1013,7 +1024,7 @@ De parent collectie moet al bestaan anders werkt het linken niet.
     "_id": "xyz",
     "_collection": "vooprbeeld_verzameling_2",
     "_validity": "2012-01-01T00:00:00.000Z"
-    "linked_item": link("voorbeeld_verzameling", "abc"),
+    "linked_item": ["~#link",["voorbeeld_verzameling", "abc"]],
      .
      .
      .
@@ -1030,7 +1041,7 @@ De parent collectie moet al bestaan anders werkt het linken niet.
     "_id": "xyz",
     "_collection": "voorbeeld_verzameling_2",
     "_validity": "2012-01-01T00:00:00.000Z"
-    "linked_items": [link("voorbeeld_verzameling", "abc"), link(... ],
+    "linked_items": ["~#link" ["collectie1", "id1", "collectie2", "id2", ...]],
      .
      .
      .
@@ -1225,7 +1236,7 @@ Bij een <strong>change</strong> worden alle gecreëerde features gewijzigd.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-02-17 09:59:03 W. Europe Standard Time
+Last updated 2015-02-18 11:36:14 W. Europe Standard Time
 </div>
 </div>
 </body>
