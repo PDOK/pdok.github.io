@@ -852,7 +852,7 @@ link
 <p>De bedoeling is om alle types op <a href="http://geojson.org/geojson-spec.html#geometry-objects" class="bare">http://geojson.org/geojson-spec.html#geometry-objects</a>. <strong>Dit doen we nu nog niet.</strong></p>
 </div>
 <div class="paragraph">
-<p>Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionalitiet voor gml. Deze accepteerd een gml geometry string.</p>
+<p>Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionaliteit voor gml. Deze accepteerd een gml geometry string.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1066,7 +1066,7 @@ De links moeten al bestaan op het moment van linken.
 <h2 id="_nested_features">Nested features</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Linken van collecties vereist dat alle element een <strong>_collection</strong> en <strong>_id</strong> hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is altijd een array van objecten.</p>
+<p>Linken van collecties vereist dat alle element een <strong>_collection</strong> en <strong>_id</strong> hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is eventueel een array van objecten.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1075,13 +1075,38 @@ De links moeten al bestaan op het moment van linken.
     "_id": "klm",
     "_collection": "nested_parent",
     "_validity": "2012-01-01T00:00:00.000Z"
-    "child_object": [{ "omschrijving": "ik ben genest",
+    "child_object": { "omschrijving": "ik ben genest", <b class="conum">(1)</b>
                        "_geometry": { ... }
-                     }]
+                     }
+     "_geometry": { ... },
+     "parent_info": "extra informatie"
+}
+
+{
+    "_action": "new",
+    "_id": "klm",
+    "_collection": "nested_parent",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "child_object": [{ "omschrijving": "ik ben genest", <b class="conum">(2)</b>
+                       "_geometry": { ... }
+                     },
+                     { "omschrijving": "ik ben ook genest",
+                       "_geometry": { ... }
+                     ]
      "_geometry": { ... },
      "parent_info": "extra informatie"
 }</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>enkel object</p>
+</li>
+<li>
+<p>array van objecten</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
 <p>Op de achtergrond worden de geneste objecten in een eigen collectie gestopt.</p>
@@ -1236,7 +1261,7 @@ Bij een <strong>change</strong> worden alle gecreëerde features gewijzigd.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-02-18 11:36:14 W. Europe Standard Time
+Last updated 2015-02-20 11:50:57 W. Europe Standard Time
 </div>
 </div>
 </body>

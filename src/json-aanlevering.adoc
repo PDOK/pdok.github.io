@@ -52,7 +52,7 @@ link:: collection, id -> featurelink
 === _geometry
 De bedoeling is om alle types op http://geojson.org/geojson-spec.html#geometry-objects. *Dit doen we nu nog niet.*
 
-Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionalitiet voor gml. Deze accepteerd een gml geometry string.
+Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionaliteit voor gml. Deze accepteerd een gml geometry string.
 [source, json]
 ----
 "_geom": { "type": "gml",
@@ -191,7 +191,7 @@ Dit mag een array zijn.
 IMPORTANT: De links moeten al bestaan op het moment van linken.
 
 == Nested features
-Linken van collecties vereist dat alle element een *_collection* en *_id* hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is altijd een array van objecten.
+Linken van collecties vereist dat alle element een *_collection* en *_id* hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is eventueel een array van objecten.
 
 [source, json]
 ----
@@ -200,13 +200,31 @@ Linken van collecties vereist dat alle element een *_collection* en *_id* hebben
     "_id": "klm",
     "_collection": "nested_parent",
     "_validity": "2012-01-01T00:00:00.000Z"
-    "child_object": [{ "omschrijving": "ik ben genest",
+    "child_object": { "omschrijving": "ik ben genest", # <1>
                        "_geometry": { ... }
-                     }]
+                     }
+     "_geometry": { ... },
+     "parent_info": "extra informatie"
+}
+
+{
+    "_action": "new",
+    "_id": "klm",
+    "_collection": "nested_parent",
+    "_validity": "2012-01-01T00:00:00.000Z"
+    "child_object": [{ "omschrijving": "ik ben genest", # <2>
+                       "_geometry": { ... }
+                     },
+                     { "omschrijving": "ik ben ook genest",
+                       "_geometry": { ... }
+                     ]
      "_geometry": { ... },
      "parent_info": "extra informatie"
 }
 ----
+<1> enkel object
+<2> array van objecten
+
 
 Op de achtergrond worden de geneste objecten in een eigen collectie gestopt.
 
