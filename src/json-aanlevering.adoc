@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.3 2015-02-26
+v0.4 2015-02-26
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -24,6 +24,8 @@ De aanlevering geschied in 1 bestand:
     "features" : pass:quotes[[ _feature objects_ ]]
 }
 ----
+
+IMPORTANT: De volgorde is hier belangrijk! Features moet het laatste atrribuut zijn.
 
 == Features
 Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop underscore (_)
