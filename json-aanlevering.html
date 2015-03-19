@@ -711,7 +711,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="details">
 <span id="author" class="author">Raymond Kroon</span><br>
 <span id="email" class="email"><a href="mailto:raymond.kroon@kadaster.nl">raymond.kroon@kadaster.nl</a></span><br>
-<span id="revdate">v0.4 2015-02-26</span>
+<span id="revdate">v0.5 2015-03-19</span>
 </div>
 </div>
 <div id="content">
@@ -810,7 +810,7 @@ _collection
 _validity
 </td>
 <td class="hdlist2">
-<p>datetimestring, geldigheid vanaf tijdstip</p>
+<p>datetimestring, geldigheid vanaf tijdstip: <em>YYYY-MM-DD<strong>T</strong>HH:mm:ss.sss</em> (NL) of UTC <em>YYYY-MM-DD<strong>T</strong>HH:mm:ss.sss<strong>Z</strong> </em></p>
 </td>
 </tr>
 <tr>
@@ -833,7 +833,7 @@ _geometry
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>["~#functienaam": [param1, param2, ...]]</pre>
+<pre>["~#functienaam", [param1, param2, ...]]</pre>
 </div>
 </div>
 <div class="hdlist">
@@ -844,7 +844,15 @@ _geometry
 moment
 </td>
 <td class="hdlist2">
-<p>datetimestring &#8594; datetime obj</p>
+<p>datetimestring (<em>YYYY-MM-DD<strong>T</strong>HH:mm:ss.sss</em> of met <strong>Z</strong> voor UTC) &#8594; datetime obj</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+date
+</td>
+<td class="hdlist2">
+<p>datestring (<em>YYYY-MM-DD</em> of met <strong>Z</strong> voor UTC) &#8594; date obj</p>
 </td>
 </tr>
 <tr>
@@ -882,11 +890,11 @@ link
     "_action": "new",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_validity": "2010-01-01T00:00:00.000Z",
+    "_validity": "2010-01-01T00:00:00.000",
     "_geometry": { "type": "gml",
                "gml": "&lt;gml:Point srsName=\"urn:ogc:def:crs:EPSG::28992\"&gt;&lt;gml:pos&gt;000150.000 000380.000&lt;/gml:pos&gt;&lt;/gml:Point&gt;"
                },
-    "een_datum_veld": ["~#moment", ["2012-04-23T18:25:43.511Z"]],
+    "een_datum_veld": ["~#moment", ["2012-04-23T18:25:43.511"]],
     "vrij_veld_1": "ik ben een punt",
     "vrij_veld_2":  "ik ben een lijn",
       .
@@ -923,8 +931,8 @@ Een change aanbieden sluit de huidige periode en start een nieuwe.
     "_action": "update",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_validity": "2011-01-01T00:00:00.000Z",
-    "_current_validity": "2010-01-01T00:00:00.000Z",
+    "_validity": "2011-01-01T00:00:00.000",
+    "_current_validity": "2010-01-01T00:00:00.000",
     "vrij_veld_1": "Ik ben een Point",
     "vrij_veld_2": null , <b class="conum">(1)</b>
      .
@@ -953,8 +961,8 @@ Een change aanbieden sluit de huidige periode en start een nieuwe.
     "_action": "close",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_validity": "2012-01-01T00:00:00.000Z", <b class="conum">(1)</b>
-    "_current_validity": "2011-01-01T00:00:00.000Z",
+    "_validity": "2012-01-01T00:00:00.000", <b class="conum">(1)</b>
+    "_current_validity": "2011-01-01T00:00:00.000",
     "sluit_reden": "Verwijderd" <b class="conum">(2)</b>
 }</code></pre>
 </div>
@@ -993,7 +1001,7 @@ Na een close kan een object niet meer gemuteerd worden.
     "_action": "delete",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_current_validity": "2012-01-01T00:00:00.000Z"
+    "_current_validity": "2012-01-01T00:00:00.000"
 }</code></pre>
 </div>
 </div>
@@ -1012,7 +1020,7 @@ Na een close kan een object niet meer gemuteerd worden.
     "_action": "new",
     "_id": "child-id",
     "_collection": "child_verzameling",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "_parent_collection": "voorbeeld_verzameling",
     "_parent_id": "abc"
 }</code></pre>
@@ -1039,7 +1047,7 @@ De parent collectie moet al bestaan anders werkt het linken niet.
     "_action": "new",
     "_id": "xyz",
     "_collection": "vooprbeeld_verzameling_2",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "linked_item": ["~#link",["voorbeeld_verzameling", "abc"]],
      .
      .
@@ -1056,7 +1064,7 @@ De parent collectie moet al bestaan anders werkt het linken niet.
     "_action": "new",
     "_id": "xyz",
     "_collection": "voorbeeld_verzameling_2",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "linked_items": ["~#link" ["collectie1", "id1", "collectie2", "id2", ...]],
      .
      .
@@ -1090,7 +1098,7 @@ De links moeten al bestaan op het moment van linken.
     "_action": "new",
     "_id": "klm",
     "_collection": "nested_parent",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "child_object": { "omschrijving": "ik ben genest", <b class="conum">(1)</b>
                        "_geometry": { ... }
                      }
@@ -1102,7 +1110,7 @@ De links moeten al bestaan op het moment van linken.
     "_action": "new",
     "_id": "klm",
     "_collection": "nested_parent",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "child_object": [{ "omschrijving": "ik ben genest", <b class="conum">(2)</b>
                        "_geometry": { ... }
                      },
@@ -1133,7 +1141,7 @@ De links moeten al bestaan op het moment van linken.
     "_action": "new",
     "_id": "[uid]",
     "_collection": "nested_parent$child_object",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "_parent_collection": "nested_parent",
     "_parent_id": "klm",
     "omschrijving": "ik ben genest",
@@ -1182,7 +1190,7 @@ Het is mogelijk om geen geometry toe te voegen. Er moet dan wel een nested featu
     "_action": "new",
     "_id": "klm$[uid]",
     "_collection": "nested_parent$child_object",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "omschrijving": "ik ben genest",
     "_geometry": { ... },
     <strong>"nested_parent$parent_info": "extra informatie"</strong>
@@ -1277,7 +1285,7 @@ Bij een <strong>change</strong> worden alle gecreëerde features gewijzigd.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-02-26 17:37:45 W. Europe Standard Time
+Last updated 2015-03-19 16:26:39 W. Europe Standard Time
 </div>
 </div>
 </body>

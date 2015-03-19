@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.4 2015-02-26
+v0.5 2015-03-19
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -35,7 +35,7 @@ Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorlo
 _action:: new, change, close, delete
 _id:: uniek in _collection, string
 _collection:: string
-_validity:: datetimestring, geldigheid vanaf tijdstip
+_validity:: datetimestring, geldigheid vanaf tijdstip: __YYYY-MM-DD**T**HH:mm:ss.sss__ (NL) of UTC __YYYY-MM-DD**T**HH:mm:ss.sss**Z** __
 _geometry:: geojson object, uitgebreid met PDOK specifieke implementaties.
 
 Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies
@@ -43,12 +43,13 @@ Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek
 === Functies
 Een functie is eigenlijk een voorgedefinieerd type. Je gebruikt het als volgt:
 ----
-["~#functienaam": [param1, param2, ...]]
+["~#functienaam", [param1, param2, ...]]
 ----
 
 .Beschikbare functies
 [horizontal]
-moment:: datetimestring -> datetime obj
+moment:: datetimestring (__YYYY-MM-DD**T**HH:mm:ss.sss__ of met *Z* voor UTC) -> datetime obj
+date:: datestring (__YYYY-MM-DD__ of met *Z* voor UTC) -> date obj
 link:: collection, id -> featurelink
 
 === _geometry
@@ -70,11 +71,11 @@ Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionaliteit voo
     "_action": "new",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_validity": "2010-01-01T00:00:00.000Z",
+    "_validity": "2010-01-01T00:00:00.000",
     "_geometry": { "type": "gml",
                "gml": "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::28992\"><gml:pos>000150.000 000380.000</gml:pos></gml:Point>"
                },
-    "een_datum_veld": ["~#moment", ["2012-04-23T18:25:43.511Z"]],
+    "een_datum_veld": ["~#moment", ["2012-04-23T18:25:43.511"]],
     "vrij_veld_1": "ik ben een punt",
     "vrij_veld_2":  "ik ben een lijn",
       .
@@ -97,8 +98,8 @@ NOTE: Een change aanbieden sluit de huidige periode en start een nieuwe.
     "_action": "update",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_validity": "2011-01-01T00:00:00.000Z",
-    "_current_validity": "2010-01-01T00:00:00.000Z",
+    "_validity": "2011-01-01T00:00:00.000",
+    "_current_validity": "2010-01-01T00:00:00.000",
     "vrij_veld_1": "Ik ben een Point",
     "vrij_veld_2": null , # <1>
      .
@@ -119,8 +120,8 @@ _validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *clo
     "_action": "close",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_validity": "2012-01-01T00:00:00.000Z", # <1>
-    "_current_validity": "2011-01-01T00:00:00.000Z",
+    "_validity": "2012-01-01T00:00:00.000", # <1>
+    "_current_validity": "2011-01-01T00:00:00.000",
     "sluit_reden": "Verwijderd" # <2>
 }
 ----
@@ -139,7 +140,7 @@ Als er een fout gemaakt is in het verleden kan hiermee de feature gereset worden
     "_action": "delete",
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
-    "_current_validity": "2012-01-01T00:00:00.000Z"
+    "_current_validity": "2012-01-01T00:00:00.000"
 }
 ----
 
@@ -152,7 +153,7 @@ Om relaties vast te leggen tussen features in verschillende collecties, kunnen _
     "_action": "new",
     "_id": "child-id",
     "_collection": "child_verzameling",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "_parent_collection": "voorbeeld_verzameling",
     "_parent_id": "abc"
 }
@@ -168,7 +169,7 @@ Deze manier van linken ondersteund alleen alleen 1 - n, daarom kunnen features g
     "_action": "new",
     "_id": "xyz",
     "_collection": "vooprbeeld_verzameling_2",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "linked_item": ["~#link",["voorbeeld_verzameling", "abc"]],
      .
      .
@@ -184,7 +185,7 @@ Dit mag een array zijn.
     "_action": "new",
     "_id": "xyz",
     "_collection": "voorbeeld_verzameling_2",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "linked_items": ["~#link" ["collectie1", "id1", "collectie2", "id2", ...]],
      .
      .
@@ -203,7 +204,7 @@ Linken van collecties vereist dat alle element een *_collection* en *_id* hebben
     "_action": "new",
     "_id": "klm",
     "_collection": "nested_parent",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "child_object": { "omschrijving": "ik ben genest", # <1>
                        "_geometry": { ... }
                      }
@@ -215,7 +216,7 @@ Linken van collecties vereist dat alle element een *_collection* en *_id* hebben
     "_action": "new",
     "_id": "klm",
     "_collection": "nested_parent",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "child_object": [{ "omschrijving": "ik ben genest", # <2>
                        "_geometry": { ... }
                      },
@@ -238,7 +239,7 @@ Op de achtergrond worden de geneste objecten in een eigen collectie gestopt.
     "_action": "new",
     "_id": "[uid]",
     "_collection": "nested_parent$child_object",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "_parent_collection": "nested_parent",
     "_parent_id": "klm",
     "omschrijving": "ik ben genest",
@@ -261,7 +262,7 @@ Als het voorbeeld in <<Nested features>> geen _geometry zou hebben, dan zou op d
     "_action": "new",
     "_id": "klm$[uid]",
     "_collection": "nested_parent$child_object",
-    "_validity": "2012-01-01T00:00:00.000Z"
+    "_validity": "2012-01-01T00:00:00.000"
     "omschrijving": "ik ben genest",
     "_geometry": { ... },
     pass:quotes[*"nested_parent$parent_info": "extra informatie"*]
