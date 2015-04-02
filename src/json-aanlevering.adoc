@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.5 2015-03-19
+v0.6 2015-04-02
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -231,7 +231,7 @@ Linken van collecties vereist dat alle element een *_collection* en *_id* hebben
 <2> array van objecten
 
 
-Op de achtergrond worden de geneste objecten in een eigen collectie gestopt.
+Op de achtergrond worden de geneste objecten in een eigen collectie gestopt. De childs worden verwijderd uit de parent.
 
 [source, json]
 ----
@@ -247,7 +247,7 @@ Op de achtergrond worden de geneste objecten in een eigen collectie gestopt.
 }
 ----
 
-IMPORTANT: Bij een *change* van het *child_object* worden alle _huidige nested features_ gesloten en worden de nieuwe aangemaakt.
+IMPORTANT: Bij een *change* van het *child_object* worden alle _huidige nested features_ *geCLOSEd* en worden de nieuwe aangemaakt.
 
 == Feature zonder _geometry
 Een feature moet altijd een geometry hebben, echter in sommige gevallen is het wenselijk om dit in een nested feature te stoppen.
@@ -269,7 +269,9 @@ Als het voorbeeld in <<Nested features>> geen _geometry zou hebben, dan zou op d
 }
 ----
 
-IMPORTANT: Bij een *change* worden alle gecreëerde features gewijzigd.
+IMPORTANT: Bij een *change* worden alle _huidige nested features_ *geCLOSEd* en worden nieuwe features aangemaakt.
+
+NOTE: Het verschil tussen een parent met en zonder geometrie is dat bij het eerste geval er ook een parent collectie is met daarin de parent zonder childs. In het tweede geval bestaat alleen de child collectie.
 
 == Feature historie
 Gebruik makend van het *_validity* attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.

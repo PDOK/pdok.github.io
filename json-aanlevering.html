@@ -711,7 +711,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="details">
 <span id="author" class="author">Raymond Kroon</span><br>
 <span id="email" class="email"><a href="mailto:raymond.kroon@kadaster.nl">raymond.kroon@kadaster.nl</a></span><br>
-<span id="revdate">v0.5 2015-03-19</span>
+<span id="revdate">v0.6 2015-04-02</span>
 </div>
 </div>
 <div id="content">
@@ -1133,7 +1133,7 @@ De links moeten al bestaan op het moment van linken.
 </ol>
 </div>
 <div class="paragraph">
-<p>Op de achtergrond worden de geneste objecten in een eigen collectie gestopt.</p>
+<p>Op de achtergrond worden de geneste objecten in een eigen collectie gestopt. De childs worden verwijderd uit de parent.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1156,7 +1156,7 @@ De links moeten al bestaan op het moment van linken.
 <div class="title">Important</div>
 </td>
 <td class="content">
-Bij een <strong>change</strong> van het <strong>child_object</strong> worden alle <em>huidige nested features</em> gesloten en worden de nieuwe aangemaakt.
+Bij een <strong>change</strong> van het <strong>child_object</strong> worden alle <em>huidige nested features</em> <strong>geCLOSEd</strong> en worden de nieuwe aangemaakt.
 </td>
 </tr>
 </table>
@@ -1204,7 +1204,19 @@ Het is mogelijk om geen geometry toe te voegen. Er moet dan wel een nested featu
 <div class="title">Important</div>
 </td>
 <td class="content">
-Bij een <strong>change</strong> worden alle gecreëerde features gewijzigd.
+Bij een <strong>change</strong> worden alle <em>huidige nested features</em> <strong>geCLOSEd</strong> en worden nieuwe features aangemaakt.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Het verschil tussen een parent met en zonder geometrie is dat bij het eerste geval er ook een parent collectie is met daarin de parent zonder childs. In het tweede geval bestaat alleen de child collectie.
 </td>
 </tr>
 </table>
@@ -1285,7 +1297,7 @@ Bij een <strong>change</strong> worden alle gecreëerde features gewijzigd.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-03-19 16:26:39 W. Europe Standard Time
+Last updated 2015-04-02 11:21:11 W. Europe Daylight Time
 </div>
 </div>
 </body>
