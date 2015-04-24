@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.6 2015-04-02
+v0.7 2015-04-24
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -8,8 +8,10 @@ Aanlevering is gebaseerd op het volgende:
 
 * Basis van alles is een *feature*
 * Een *collection* is een verzameling van features die eenzelfde soort object (bijv. panden) beschrijven. Het is handig om dezelfde veldnamen te gebruiken, al zitten hier vooralsnog geen beperkingen op.
-* Features hebben *1 geometry* en verder platte properties
+* Features hebben *1 geometry* en verder platte attributen
 * Van features worden history bij gehouden (in het geval van wijzigingen)
+
+IMPORTANT: collection namen en attribuut namen zijn *niet* hoofdlettergevoelig. Bij het verwerken worden ze omgezet naar kleine letters.
 
 == Aanlevering
 De aanlevering geschied in 1 bestand:
@@ -25,7 +27,7 @@ De aanlevering geschied in 1 bestand:
 }
 ----
 
-IMPORTANT: De volgorde is hier belangrijk! Features moet het laatste atrribuut zijn.
+IMPORTANT: De volgorde is hier belangrijk! Features moet het laatste attribuut zijn.
 
 == Features
 Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop underscore (_)
@@ -38,13 +40,20 @@ _collection:: string
 _validity:: datetimestring, geldigheid vanaf tijdstip: __YYYY-MM-DD**T**HH:mm:ss.sss__ (NL) of UTC __YYYY-MM-DD**T**HH:mm:ss.sss**Z** __
 _geometry:: geojson object, uitgebreid met PDOK specifieke implementaties.
 
-Daarnaast zijn er vrije velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies
+Daarnaast zijn er vrije (attributen) velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.
 
 === Functies
 Een functie is eigenlijk een voorgedefinieerd type. Je gebruikt het als volgt:
 ----
 ["~#functienaam", [param1, param2, ...]]
 ----
+
+Soms kan het wenselijk zijn dat er een lege (null) waarde opgegeven wordt voor functies. Dan kan er null voor de parameters vector opgegeven worden:
+----
+["~#functienaam", null]
+----
+
+Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. Als dit niet zo is zal het type *string* zijn.
 
 .Beschikbare functies
 [horizontal]

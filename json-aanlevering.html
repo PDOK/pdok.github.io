@@ -711,7 +711,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="details">
 <span id="author" class="author">Raymond Kroon</span><br>
 <span id="email" class="email"><a href="mailto:raymond.kroon@kadaster.nl">raymond.kroon@kadaster.nl</a></span><br>
-<span id="revdate">v0.6 2015-04-02</span>
+<span id="revdate">v0.7 2015-04-24</span>
 </div>
 </div>
 <div id="content">
@@ -732,12 +732,24 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <p>Een <strong>collection</strong> is een verzameling van features die eenzelfde soort object (bijv. panden) beschrijven. Het is handig om dezelfde veldnamen te gebruiken, al zitten hier vooralsnog geen beperkingen op.</p>
 </li>
 <li>
-<p>Features hebben <strong>1 geometry</strong> en verder platte properties</p>
+<p>Features hebben <strong>1 geometry</strong> en verder platte attributen</p>
 </li>
 <li>
 <p>Van features worden history bij gehouden (in het geval van wijzigingen)</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+collection namen en attribuut namen zijn <strong>niet</strong> hoofdlettergevoelig. Bij het verwerken worden ze omgezet naar kleine letters.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -765,7 +777,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="title">Important</div>
 </td>
 <td class="content">
-De volgorde is hier belangrijk! Features moet het laatste atrribuut zijn.
+De volgorde is hier belangrijk! Features moet het laatste attribuut zijn.
 </td>
 </tr>
 </table>
@@ -824,7 +836,7 @@ _geometry
 </table>
 </div>
 <div class="paragraph">
-<p>Daarnaast zijn er vrije velden. Dit mogen alleen simple types (<em>string, numeriek, boolean</em>) zijn of voorgedefinieerde functies</p>
+<p>Daarnaast zijn er vrije (attributen) velden. Dit mogen alleen simple types (<em>string, numeriek, boolean</em>) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.</p>
 </div>
 <div class="sect2">
 <h3 id="_functies">Functies</h3>
@@ -835,6 +847,17 @@ _geometry
 <div class="content">
 <pre>["~#functienaam", [param1, param2, ...]]</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Soms kan het wenselijk zijn dat er een lege (null) waarde opgegeven wordt voor functies. Dan kan er null voor de parameters vector opgegeven worden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>["~#functienaam", null]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. Als dit niet zo is zal het type <strong>string</strong> zijn.</p>
 </div>
 <div class="hdlist">
 <div class="title">Beschikbare functies</div>
@@ -1297,7 +1320,7 @@ Het verschil tussen een parent met en zonder geometrie is dat bij het eerste gev
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-04-02 11:21:11 W. Europe Daylight Time
+Last updated 2015-04-24 10:23:26 W. Europe Daylight Time
 </div>
 </div>
 </body>
