@@ -711,7 +711,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="details">
 <span id="author" class="author">Raymond Kroon</span><br>
 <span id="email" class="email"><a href="mailto:raymond.kroon@kadaster.nl">raymond.kroon@kadaster.nl</a></span><br>
-<span id="revdate">v0.7 2015-04-24</span>
+<span id="revdate">v0.8 2015-05-10</span>
 </div>
 </div>
 <div id="content">
@@ -1213,10 +1213,10 @@ Het is mogelijk om geen geometry toe te voegen. Er moet dan wel een nested featu
     "_action": "new",
     "_id": "klm$[uid]",
     "_collection": "nested_parent$child_object",
-    "_validity": "2012-01-01T00:00:00.000"
-    "omschrijving": "ik ben genest",
+    "_validity": "2012-01-01T00:00:00.000",
+    <strong>"child_object$omschrijving": "ik ben genest"</strong>,
     "_geometry": { ... },
-    <strong>"nested_parent$parent_info": "extra informatie"</strong>
+    <strong>"parent_info": "extra informatie"</strong>
 }</code></pre>
 </div>
 </div>
@@ -1320,7 +1320,7 @@ Het verschil tussen een parent met en zonder geometrie is dat bij het eerste gev
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-04-24 10:23:26 W. Europe Daylight Time
+Last updated 2015-05-10 17:50:12 W. Europe Daylight Time
 </div>
 </div>
 </body>

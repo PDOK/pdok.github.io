@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.7 2015-04-24
+v0.8 2015-05-10
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -271,10 +271,10 @@ Als het voorbeeld in <<Nested features>> geen _geometry zou hebben, dan zou op d
     "_action": "new",
     "_id": "klm$[uid]",
     "_collection": "nested_parent$child_object",
-    "_validity": "2012-01-01T00:00:00.000"
-    "omschrijving": "ik ben genest",
+    "_validity": "2012-01-01T00:00:00.000",
+    pass:quotes[*"child_object$omschrijving": "ik ben genest"*],
     "_geometry": { ... },
-    pass:quotes[*"nested_parent$parent_info": "extra informatie"*]
+    pass:quotes[*"parent_info": "extra informatie"*]
 }
 ----
 
