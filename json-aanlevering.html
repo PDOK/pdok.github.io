@@ -711,7 +711,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="details">
 <span id="author" class="author">Raymond Kroon</span><br>
 <span id="email" class="email"><a href="mailto:raymond.kroon@kadaster.nl">raymond.kroon@kadaster.nl</a></span><br>
-<span id="revdate">v0.8 2015-04-24</span>
+<span id="revdate">v0.9 2015-07-17</span>
 </div>
 </div>
 <div id="content">
@@ -1190,59 +1190,7 @@ Bij een <strong>change</strong> van het <strong>child_object</strong> worden all
 <h2 id="_feature_zonder_geometry">Feature zonder _geometry</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Een feature moet altijd een geometry hebben, echter in sommige gevallen is het wenselijk om dit in een nested feature te stoppen.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Het is mogelijk om geen geometry toe te voegen. Er moet dan wel een nested feature zijn die wel een geometry heeft.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Als het voorbeeld in <a href="#_nested_features">Nested features</a> geen _geometry zou hebben, dan zou op de achtergrond het volgende gebeuren.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json" data-lang="json">{
-    "_action": "new",
-    "_id": "klm$[uid]",
-    "_collection": "nested_parent$child_object",
-    "_validity": "2012-01-01T00:00:00.000"
-    "omschrijving": "ik ben genest",
-    "_geometry": { ... },
-    <strong>"_parent</strong>$parent_info": "extra informatie"
-}</code></pre>
-</div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Important</div>
-</td>
-<td class="content">
-Bij een <strong>change</strong> worden alle <em>huidige nested features</em> <strong>geCLOSEd</strong> en worden nieuwe features aangemaakt.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Het verschil tussen een parent met en zonder geometrie is dat bij het eerste geval er ook een parent collectie is met daarin de parent zonder childs. In het tweede geval bestaat alleen de child collectie.
-</td>
-</tr>
-</table>
+<p>Een feature zonder geometry wordt ook verwerkt. De data kan dan echter niet gevisualiseerd worden. Wel kan het gebruikt worden voor eventuele extracten. Voor de rest is een feature zonder geometry hetzelfde als een feature met geometry.</p>
 </div>
 </div>
 </div>
@@ -1320,7 +1268,7 @@ Het verschil tussen een parent met en zonder geometrie is dat bij het eerste gev
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-05-26 17:17:02 W. Europe Daylight Time
+Last updated 2015-07-17 13:51:42 W. Europe Daylight Time
 </div>
 </div>
 </body>
