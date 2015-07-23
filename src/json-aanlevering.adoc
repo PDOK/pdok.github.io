@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.9 2015-07-17
+v0.91 2015-07-23
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -37,7 +37,7 @@ Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorlo
 _action:: new, change, close, delete
 _id:: uniek in _collection, string
 _collection:: string
-_validity:: datetimestring, geldigheid vanaf tijdstip: __YYYY-MM-DD**T**HH:mm:ss.sss__ (NL) of UTC __YYYY-MM-DD**T**HH:mm:ss.sss**Z** __
+_validity:: datetimestring, geldigheid vanaf tijdstip: __YYYY-MM-DD**T**HH:mm:ss.sss__
 _geometry:: geojson object, uitgebreid met PDOK specifieke implementaties.
 
 Daarnaast zijn er vrije (attributen) velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.
@@ -57,8 +57,8 @@ Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. A
 
 .Beschikbare functies
 [horizontal]
-moment:: datetimestring (__YYYY-MM-DD**T**HH:mm:ss.sss__ of met *Z* voor UTC) -> datetime obj
-date:: datestring (__YYYY-MM-DD__ of met *Z* voor UTC) -> date obj
+moment:: datetimestring (__YYYY-MM-DD**T**HH:mm:ss.sss__ ) -> datetime obj
+date:: datestring (__YYYY-MM-DD__ ) -> date obj
 link:: collection, id -> featurelink
 
 === _geometry
