@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.91 2015-07-23
+v0.99 2015-11-17
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
@@ -121,7 +121,7 @@ NOTE: Een change aanbieden sluit de huidige periode en start een nieuwe.
 <1> Als je een veld wilt verwijderen kun je hem op __null__ zetten.
 
 === _action: "close"
-_validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *close* om de feature af te sluiten. Bij een close mag je ook nog (een laatste keer) changes uitvoeren.
+_validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *close* om de feature af te sluiten.
 
 [source, json]
 ----
@@ -130,13 +130,11 @@ _validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *clo
     "_id": "abc",
     "_collection": "voorbeeld_verzameling",
     "_validity": "2012-01-01T00:00:00.000", # <1>
-    "_current_validity": "2011-01-01T00:00:00.000",
-    "sluit_reden": "Verwijderd" # <2>
+    "_current_validity": "2011-01-01T00:00:00.000"
 }
 ----
 
 <1> Dit is de "sluitingsdatum"
-<2> Het mogen nieuwe velden zijn, maar ook huidige. Dezelfde regels gelden als bij een *change*
 
 IMPORTANT: Na een close kan een object niet meer gemuteerd worden.
 
