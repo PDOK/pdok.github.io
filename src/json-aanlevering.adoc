@@ -9,18 +9,18 @@ Aanlevering is gebaseerd op het volgende:
 * Basis van alles is een *feature*
 * Een *collection* is een verzameling van features die eenzelfde soort object (bijv. panden) beschrijven. Het is handig om dezelfde veldnamen te gebruiken, al zitten hier vooralsnog geen beperkingen op.
 * Features hebben *1 geometry* en verder platte attributen
-* Van features worden history bij gehouden (in het geval van wijzigingen)
+* Van features wordt history bijgehouden (in het geval van wijzigingen)
 
-IMPORTANT: collection namen en attribuut namen zijn *niet* hoofdlettergevoelig. Bij het verwerken worden ze omgezet naar kleine letters.
+IMPORTANT: collection-namen en attribuutnamen zijn *niet* hoofdlettergevoelig. Bij het verwerken worden ze omgezet naar kleine letters.
 
 == Aanlevering
-De aanlevering geschied in 1 bestand:
+De aanlevering geschiedt in 1 bestand:
 
 [source, json, subs="macros"]
 ----
 {
     "_meta": {
-             // hier zijn we nog niet helemaal overuit, maar een beetje meta data zou handig kunnen zijn
+             // hier zijn we nog niet helemaal over uit, maar een beetje metadata zou handig kunnen zijn
     },
     "dataset": "dataset-identifier",
     "features" : pass:quotes[[ _feature objects_ ]]
@@ -30,7 +30,7 @@ De aanlevering geschied in 1 bestand:
 IMPORTANT: De volgorde is hier belangrijk! Features moet het laatste attribuut zijn.
 
 == Features
-Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop underscore (_)
+Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop-underscore (_)
 
 .Verplichte velden
 [horizontal]
@@ -38,9 +38,9 @@ _action:: new, change, close, delete
 _id:: uniek in _collection, string
 _collection:: string
 _validity:: datetimestring, geldigheid vanaf tijdstip: __YYYY-MM-DD**T**HH:mm:ss.sss__
-_geometry:: geojson object, uitgebreid met PDOK specifieke implementaties.
+_geometry:: GeoJSON-object, uitgebreid met PDOK-specifieke implementaties.
 
-Daarnaast zijn er vrije (attributen) velden. Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.
+Daarnaast zijn er vrije velden (attributen). Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.
 
 === Functies
 Een functie is eigenlijk een voorgedefinieerd type. Je gebruikt het als volgt:
@@ -48,12 +48,12 @@ Een functie is eigenlijk een voorgedefinieerd type. Je gebruikt het als volgt:
 ["~#functienaam", [param1, param2, ...]]
 ----
 
-Soms kan het wenselijk zijn dat er een lege (null) waarde opgegeven wordt voor functies. Dan kan er null voor de parameters vector opgegeven worden:
+Soms kan het wenselijk zijn dat er een lege (null) waarde opgegeven wordt voor functies. Dan kan er null voor de parameters-vector opgegeven worden:
 ----
 ["~#functienaam", null]
 ----
 
-Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. Als dit niet zo is zal het type *string* zijn.
+Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. Als dit niet zo is, zal het type *string* zijn.
 
 .Beschikbare functies
 [horizontal]
@@ -64,7 +64,7 @@ link:: collection, id -> featurelink
 === _geometry
 De bedoeling is om alle types op http://geojson.org/geojson-spec.html#geometry-objects. *Dit doen we nu nog niet.*
 
-Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionaliteit voor gml. Deze accepteerd een gml geometry string.
+Daarnaast zijn er extra formaten. De enige nu is toegevoegde functionaliteit voor GML. Deze accepteert een GML-geometry-string.
 [source, json]
 ----
 "_geom": { "type": "gml",
@@ -118,10 +118,10 @@ NOTE: Een change aanbieden sluit de huidige periode en start een nieuwe.
 }
 ----
 
-<1> Als je een veld wilt verwijderen kun je hem op __null__ zetten.
+<1> Als je een veld wilt verwijderen, kun je hem op __null__ zetten.
 
 === _action: "close"
-_validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *close* om de feature af te sluiten.
+_validity zorgt ervoor dat we kunnen prikken in het verleden. Daarom is er *close* om de feature af te sluiten.
 
 [source, json]
 ----
@@ -139,7 +139,7 @@ _validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er *clo
 IMPORTANT: Na een close kan een object niet meer gemuteerd worden.
 
 === _action: "delete"
-Als er een fout gemaakt is in het verleden kan hiermee de feature gereset worden, zodat alles weer opnieuw aangeboden kan worden.
+Als er een fout gemaakt is in het verleden, kan hiermee de feature gereset worden, zodat alles weer opnieuw aangeboden kan worden.
 
 [source, json]
 ----
@@ -166,9 +166,9 @@ Om relaties vast te leggen tussen features in verschillende collecties, kunnen _
 }
 ----
 
-IMPORTANT: De parent collectie moet al bestaan anders werkt het linken niet.
+IMPORTANT: De parent-collectie moet al bestaan, anders werkt het linken niet.
 
-Deze manier van linken ondersteund alleen alleen 1 - n, daarom kunnen features gelinked worden met link().
+Deze manier van linken ondersteunt alleen 1 : n, daarom kunnen features gelinkt worden met link().
 
 [source, json]
 ----
@@ -203,7 +203,7 @@ Dit mag een array zijn.
 IMPORTANT: De links moeten al bestaan op het moment van linken.
 
 == Nested features
-Linken van collecties vereist dat alle element een *_collection* en *_id* hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is eventueel een array van objecten.
+Linken van collecties vereist dat alle elementen een *_collection* en *_id* hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is eventueel een array van objecten.
 
 [source, json]
 ----
@@ -238,7 +238,7 @@ Linken van collecties vereist dat alle element een *_collection* en *_id* hebben
 <2> array van objecten
 
 
-Op de achtergrond worden de geneste objecten in een eigen collectie gestopt. De childs worden verwijderd uit de parent.
+Op de achtergrond worden de geneste objecten in een eigen collectie gestopt. De children worden verwijderd uit de parent.
 
 [source, json]
 ----
@@ -259,12 +259,12 @@ IMPORTANT: Bij een *change* van het *child_object* worden alle _huidige nested f
 == Feature zonder _geometry
 Een feature zonder geometry wordt ook verwerkt. De data kan dan echter niet gevisualiseerd worden. Wel kan het gebruikt worden voor eventuele extracten. Voor de rest is een feature zonder geometry hetzelfde als een feature met geometry.
 
-== Feature historie
-Gebruik makend van het *_validity* attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.
+== Feature-historie
+Gebruik makend van het *_validity*-attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.
 
-* Een feature is geldig vanaf de validity datum bij het aanmaken (__new__). Dit is _"versie 1"_.
+* Een feature is geldig vanaf de validity-datum bij het aanmaken (__new__). Dit is _"versie 1"_.
 * Bij een change wordt versie 1 afgesloten en gaat de nieuwe versie in, oftewel _"versie 2"_.
-* Dit kan een aantal keer door gaan. Elke keer resulterend in een afgesloten huidige en geopende nieuwe versie.
+* Dit kan een aantal keer doorgaan, elke keer resulterend in een afgesloten huidige en geopende nieuwe versie.
 * Als laatste kan een feature gesloten (*close*) worden. Hierna is een feature niet meer beschikbaar.
 
 [source, json]

@@ -708,7 +708,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="details">
 <span id="author" class="author">Raymond Kroon</span><br>
 <span id="email" class="email"><a href="mailto:raymond.kroon@kadaster.nl">raymond.kroon@kadaster.nl</a></span><br>
-<span id="revnumber">version 0.99 2015-11-17</span>
+<span id="revnumber">version 0.99 2017-03-03</span>
 </div>
 </div>
 <div id="content">
@@ -732,7 +732,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <p>Features hebben <strong>1 geometry</strong> en verder platte attributen</p>
 </li>
 <li>
-<p>Van features worden history bij gehouden (in het geval van wijzigingen)</p>
+<p>Van features wordt history bijgehouden (in het geval van wijzigingen)</p>
 </li>
 </ul>
 </div>
@@ -743,7 +743,7 @@ h2 { color: #325D72; border-bottom: 1px solid #dddddd; }
 <div class="title">Important</div>
 </td>
 <td class="content">
-collection namen en attribuut namen zijn <strong>niet</strong> hoofdlettergevoelig. Bij het verwerken worden ze omgezet naar kleine letters.
+collection-namen en attribuutnamen zijn <strong>niet</strong> hoofdlettergevoelig. Bij het verwerken worden ze omgezet naar kleine letters.
 </td>
 </tr>
 </table>
@@ -754,13 +754,13 @@ collection namen en attribuut namen zijn <strong>niet</strong> hoofdlettergevoel
 <h2 id="_aanlevering">Aanlevering</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>De aanlevering geschied in 1 bestand:</p>
+<p>De aanlevering geschiedt in 1 bestand:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json" data-lang="json">{
     "_meta": {
-             // hier zijn we nog niet helemaal overuit, maar een beetje meta data zou handig kunnen zijn
+             // hier zijn we nog niet helemaal over uit, maar een beetje metadata zou handig kunnen zijn
     },
     "dataset": "dataset-identifier",
     "features" : [ <em>feature objects</em> ]
@@ -785,7 +785,7 @@ De volgorde is hier belangrijk! Features moet het laatste attribuut zijn.
 <h2 id="_features">Features</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop underscore (_)</p>
+<p>Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop-underscore (_)</p>
 </div>
 <div class="hdlist">
 <div class="title">Verplichte velden</div>
@@ -827,13 +827,13 @@ _validity
 _geometry
 </td>
 <td class="hdlist2">
-<p>geojson object, uitgebreid met PDOK specifieke implementaties.</p>
+<p>GeoJSON-object, uitgebreid met PDOK-specifieke implementaties.</p>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Daarnaast zijn er vrije (attributen) velden. Dit mogen alleen simple types (<em>string, numeriek, boolean</em>) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.</p>
+<p>Daarnaast zijn er vrije velden (attributen). Dit mogen alleen simple types (<em>string, numeriek, boolean</em>) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.</p>
 </div>
 <div class="sect2">
 <h3 id="_functies">Functies</h3>
@@ -846,7 +846,7 @@ _geometry
 </div>
 </div>
 <div class="paragraph">
-<p>Soms kan het wenselijk zijn dat er een lege (null) waarde opgegeven wordt voor functies. Dan kan er null voor de parameters vector opgegeven worden:</p>
+<p>Soms kan het wenselijk zijn dat er een lege (null) waarde opgegeven wordt voor functies. Dan kan er null voor de parameters-vector opgegeven worden:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -854,7 +854,7 @@ _geometry
 </div>
 </div>
 <div class="paragraph">
-<p>Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. Als dit niet zo is zal het type <strong>string</strong> zijn.</p>
+<p>Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. Als dit niet zo is, zal het type <strong>string</strong> zijn.</p>
 </div>
 <div class="hdlist">
 <div class="title">Beschikbare functies</div>
@@ -892,7 +892,7 @@ link
 <p>De bedoeling is om alle types op <a href="http://geojson.org/geojson-spec.html#geometry-objects" class="bare">http://geojson.org/geojson-spec.html#geometry-objects</a>. <strong>Dit doen we nu nog niet.</strong></p>
 </div>
 <div class="paragraph">
-<p>Daarnaast zijn er extra formaten: De enige nu is toegevoegde functionaliteit voor gml. Deze accepteerd een gml geometry string.</p>
+<p>Daarnaast zijn er extra formaten. De enige nu is toegevoegde functionaliteit voor GML. Deze accepteert een GML-geometry-string.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -965,7 +965,7 @@ Een change aanbieden sluit de huidige periode en start een nieuwe.
 <div class="colist arabic">
 <ol>
 <li>
-<p>Als je een veld wilt verwijderen kun je hem op <em>null</em> zetten.</p>
+<p>Als je een veld wilt verwijderen, kun je hem op <em>null</em> zetten.</p>
 </li>
 </ol>
 </div>
@@ -973,7 +973,7 @@ Een change aanbieden sluit de huidige periode en start een nieuwe.
 <div class="sect2">
 <h3 id="__action_close">_action: "close"</h3>
 <div class="paragraph">
-<p>_validity zorgt er voor dat we kunnen prikken in het verleden. Daarom is er <strong>close</strong> om de feature af te sluiten.</p>
+<p>_validity zorgt ervoor dat we kunnen prikken in het verleden. Daarom is er <strong>close</strong> om de feature af te sluiten.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1009,7 +1009,7 @@ Na een close kan een object niet meer gemuteerd worden.
 <div class="sect2">
 <h3 id="__action_delete">_action: "delete"</h3>
 <div class="paragraph">
-<p>Als er een fout gemaakt is in het verleden kan hiermee de feature gereset worden, zodat alles weer opnieuw aangeboden kan worden.</p>
+<p>Als er een fout gemaakt is in het verleden, kan hiermee de feature gereset worden, zodat alles weer opnieuw aangeboden kan worden.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1049,13 +1049,13 @@ Na een close kan een object niet meer gemuteerd worden.
 <div class="title">Important</div>
 </td>
 <td class="content">
-De parent collectie moet al bestaan anders werkt het linken niet.
+De parent-collectie moet al bestaan, anders werkt het linken niet.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Deze manier van linken ondersteund alleen alleen 1 - n, daarom kunnen features gelinked worden met link().</p>
+<p>Deze manier van linken ondersteunt alleen 1 : n, daarom kunnen features gelinkt worden met link().</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1106,7 +1106,7 @@ De links moeten al bestaan op het moment van linken.
 <h2 id="_nested_features">Nested features</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Linken van collecties vereist dat alle element een <strong>_collection</strong> en <strong>_id</strong> hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is eventueel een array van objecten.</p>
+<p>Linken van collecties vereist dat alle elementen een <strong>_collection</strong> en <strong>_id</strong> hebben. Het kan onwenselijk zijn om deze zelf bij te houden, daarom kunnen geneste features toegevoegd worden aan een feature. Dit is eventueel een array van objecten.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1149,7 +1149,7 @@ De links moeten al bestaan op het moment van linken.
 </ol>
 </div>
 <div class="paragraph">
-<p>Op de achtergrond worden de geneste objecten in een eigen collectie gestopt. De childs worden verwijderd uit de parent.</p>
+<p>Op de achtergrond worden de geneste objecten in een eigen collectie gestopt. De children worden verwijderd uit de parent.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1188,21 +1188,21 @@ Bij een <strong>change</strong> van het <strong>child_object</strong> worden all
 </div>
 </div>
 <div class="sect1">
-<h2 id="_feature_historie">Feature historie</h2>
+<h2 id="_feature_historie">Feature-historie</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Gebruik makend van het <strong>_validity</strong> attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.</p>
+<p>Gebruik makend van het <strong>_validity</strong>-attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Een feature is geldig vanaf de validity datum bij het aanmaken (<em>new</em>). Dit is <em>"versie 1"</em>.</p>
+<p>Een feature is geldig vanaf de validity-datum bij het aanmaken (<em>new</em>). Dit is <em>"versie 1"</em>.</p>
 </li>
 <li>
 <p>Bij een change wordt versie 1 afgesloten en gaat de nieuwe versie in, oftewel <em>"versie 2"</em>.</p>
 </li>
 <li>
-<p>Dit kan een aantal keer door gaan. Elke keer resulterend in een afgesloten huidige en geopende nieuwe versie.</p>
+<p>Dit kan een aantal keer doorgaan, elke keer resulterend in een afgesloten huidige en geopende nieuwe versie.</p>
 </li>
 <li>
 <p>Als laatste kan een feature gesloten (<strong>close</strong>) worden. Hierna is een feature niet meer beschikbaar.</p>
@@ -1261,8 +1261,8 @@ Bij een <strong>change</strong> van het <strong>child_object</strong> worden all
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.99 2015-11-17<br>
-Last updated 2015-11-17 17:04:50 CET
+Version 0.99 2017-03-03<br>
+Last updated 2017-03-03 16:44:00 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
