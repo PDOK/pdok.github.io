@@ -46,11 +46,13 @@ _collection:: string
 _validity:: date-time-string, tijdstip begin geldigheid: __yyyy-MM-dd**T**HH:mm:ss.SSSZ__
 
 Daarnaast zijn er vrije velden (attributen).
-Dit mogen simple types (_string, numeriek, boolean_) zijn, complex types (arrays of subobjecten), geometrieobjecten (in een van de ondersteunde formaten, zie verderop) of voorgedefinieerde functies.
+Dit mogen simple types (_string, numeriek, boolean_) zijn, complex types (arrays of subobjecten), geometrieobjecten (in
+een van de ondersteunde formaten, zie verderop) of voorgedefinieerde functies.
 Het type wordt bepaald op basis van het eerste voorkomen van een attribuut.
 
 === Functies
-Een functie kan gebruikt worden als een attribuut omgezet dient te worden naar een ander type dan string, numeriek of boolean.
+Een functie kan gebruikt worden als een attribuut omgezet dient te worden naar een ander type dan string, numeriek of
+boolean.
 Het zijn dus in feite voorgedefinieerde types.
 Functies worden als volgt aangeroepen:
 [source, json]
@@ -69,8 +71,10 @@ Op dit moment zijn de volgende functies beschikbaar:
 ~#double:: Double
 ~#geometry:: geometrieobject (zie verderop)
 
-De functies __~#int__, __~#boolean__ en __~#double__ zijn er als alternatief voor de automatische detectie van het attribuuttype.
-Ze komen vooral van pas als voor een bepaald attribuut lege (null) waardes kunnen voorkomen, omdat het type dan niet automatisch bepaald kan worden.
+De functies __~#int__, __~#boolean__ en __~#double__ zijn er als alternatief voor de automatische detectie van het
+attribuuttype.
+Ze komen vooral van pas als voor een bepaald attribuut lege (null) waardes kunnen voorkomen, omdat het type dan niet
+automatisch bepaald kan worden.
 In het laatste geval kiest de automatische detectie voor string als er geen functie gebruikt wordt.
 
 Voorbeeld:
@@ -110,6 +114,22 @@ Voorbeelden:
 
 Het veld __srid__ is optioneel.
 Als het wordt weggelaten, wordt 28992 (Amersfoort / RD New) gebruikt.
+
+==== Feature zonder geometrie
+Een feature zonder geometrie wordt ook verwerkt.
+De data kan dan echter niet gevisualiseerd worden.
+Wel is deze zichtbaar in eventuele downloadservices.
+Voor de rest is een feature zonder geometrie hetzelfde als een feature met geometrie.
+
+== Acties en historieopbouw
+Door gebruik van het attribuut ___action__ kunnen features worden aangemaakt (__"new"__), gewijzigd (__"change"__),
+afgesloten (__"close"__) en verwijderd (__"delete"__).
+Hierbij wordt historie opgebouwd, die voor gebruikers te raadplegen is via downloadservices.
+Elke actie is voorzien van een handelingstijdstip (___validity__).
+De volgende actie op hetzelfde object bevat het tijdstip van de vorige handeling (___current_validity__), zodat
+gevalideerd kan worden dat er geen acties op het object zijn gemist.
+
+Er volgen voorbeelden voor elk van de vier acties.
 
 === _action: "new"
 
@@ -189,9 +209,6 @@ Als er een fout gemaakt is in het verleden, kan hiermee de feature gereset worde
     "_current_validity": "2012-01-01T00:00:00.000"
 }
 ----
-
-== Feature zonder _geometry
-Een feature zonder geometry wordt ook verwerkt. De data kan dan echter niet gevisualiseerd worden. Wel kan het gebruikt worden voor eventuele extracten. Voor de rest is een feature zonder geometry hetzelfde als een feature met geometry.
 
 == Feature-historie
 Gebruik makend van het *_validity*-attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.
