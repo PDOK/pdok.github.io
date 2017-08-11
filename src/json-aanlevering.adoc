@@ -1,17 +1,23 @@
 = PDOK JSON
-Raymond Kroon <raymond.kroon@kadaster.nl>
-v0.99 2015-11-17
+Raymond Kroon <raymond.kroon@kadaster.nl>, Bas Duineveld <bas.duineveld@kadaster.nl>
+v2.0 2017-08-11
 
 De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
 
 Aanlevering is gebaseerd op het volgende:
 
-* Basis van alles is een *feature*
-* Een *collection* is een verzameling van features die eenzelfde soort object (bijv. panden) beschrijven. Het is handig om dezelfde veldnamen te gebruiken, al zitten hier vooralsnog geen beperkingen op.
-* Features hebben *1 geometry* en verder platte attributen
-* Van features wordt history bijgehouden (in het geval van wijzigingen)
+* Basis van alles is een *feature*: de attributen van een object gecombineerd met velden die de mutatieactie
+beschrijven.
+* Een *collection* is een verzameling features van hetzelfde objecttype (bijv. pand).
+Over het algemeen zullen features van één collection dezelfde attribuutnamen hebben, maar hier zitten vooralsnog geen
+beperkingen op.
+* In de ideale situatie hebben features precies één geometrie en platte attributen.
+Nul of meerdere geometrieën en complexe attributen worden ondersteund, maar leiden zoals hieronder beschreven mogelijk
+tot ander gedrag.
+* Van features wordt historie bijgehouden (in het geval van wijzigingen).
 
-IMPORTANT: collection-namen en attribuutnamen zijn *niet* hoofdlettergevoelig. Bij het verwerken worden ze omgezet naar kleine letters.
+IMPORTANT: collection-namen en attribuutnamen zijn hoofdlettergevoelig, maar gebruik van twee collection-namen die zich
+enkel in hoofdlettergebruik onderscheiden, is momenteel nog niet mogelijk.
 
 == Aanlevering
 De aanlevering geschiedt in 1 bestand:
@@ -20,7 +26,7 @@ De aanlevering geschiedt in 1 bestand:
 ----
 {
     "_meta": {
-             // hier zijn we nog niet helemaal over uit, maar een beetje metadata zou handig kunnen zijn
+        // Header met metadata. Voor toekomstig gebruik, momenteel niet gevuld.
     },
     "dataset": "dataset-identifier",
     "features" : pass:quotes[[ _feature objects_ ]]
@@ -30,47 +36,80 @@ De aanlevering geschiedt in 1 bestand:
 IMPORTANT: De volgorde is hier belangrijk! Features moet het laatste attribuut zijn.
 
 == Features
-Features hebben een aantal verplichte velden welke herkenbaar zijn aan de voorloop-underscore (_)
+Features hebben een aantal verplichte velden, die herkenbaar zijn aan de voorloop-underscore (_):
 
 .Verplichte velden
 [horizontal]
 _action:: new, change, close, delete
 _id:: uniek in _collection, string
 _collection:: string
-_validity:: datetimestring, geldigheid vanaf tijdstip: __YYYY-MM-DD**T**HH:mm:ss.sss__
-_geometry:: GeoJSON-object, uitgebreid met PDOK-specifieke implementaties.
+_validity:: date-time-string, tijdstip begin geldigheid: __yyyy-MM-dd**T**HH:mm:ss.SSSZ__
 
-Daarnaast zijn er vrije velden (attributen). Dit mogen alleen simple types (_string, numeriek, boolean_) zijn of voorgedefinieerde functies. Het type wordt bepaald op basis van de eerste keer dat een attribuut wordt aangeboden.
+Daarnaast zijn er vrije velden (attributen).
+Dit mogen simple types (_string, numeriek, boolean_) zijn, complex types (arrays of subobjecten), geometrieobjecten (in een van de ondersteunde formaten, zie verderop) of voorgedefinieerde functies.
+Het type wordt bepaald op basis van het eerste voorkomen van een attribuut.
 
 === Functies
-Een functie is eigenlijk een voorgedefinieerd type. Je gebruikt het als volgt:
+Een functie kan gebruikt worden als een attribuut omgezet dient te worden naar een ander type dan string, numeriek of boolean.
+Het zijn dus in feite voorgedefinieerde types.
+Functies worden als volgt aangeroepen:
+[source, json]
 ----
 ["~#functienaam", [param1, param2, ...]]
 ----
 
-Soms kan het wenselijk zijn dat er een lege (null) waarde opgegeven wordt voor functies. Dan kan er null voor de parameters-vector opgegeven worden:
-----
-["~#functienaam", null]
-----
-
-Dit zorgt ervoor dat bij eerste definitie het juiste type geregistreerd wordt. Als dit niet zo is, zal het type *string* zijn.
+Op dit moment zijn de volgende functies beschikbaar:
 
 .Beschikbare functies
 [horizontal]
-moment:: datetimestring (__YYYY-MM-DD**T**HH:mm:ss.sss__ ) -> datetime obj
-date:: datestring (__YYYY-MM-DD__ ) -> date obj
-link:: collection, id -> featurelink
+~#moment:: date-time-string (__yyyy-MM-dd**T**HH:mm:ss.SSSZ__) -> DateTime
+~#date:: date-string (__yyyy-MM-dd__) -> LocalDate
+~#int:: Integer
+~#boolean:: Boolean
+~#double:: Double
+~#geometry:: geometrieobject (zie verderop)
 
-=== _geometry
-De bedoeling is om alle types op http://geojson.org/geojson-spec.html#geometry-objects. *Dit doen we nu nog niet.*
+De functies __~#int__, __~#boolean__ en __~#double__ zijn er als alternatief voor de automatische detectie van het attribuuttype.
+Ze komen vooral van pas als voor een bepaald attribuut lege (null) waardes kunnen voorkomen, omdat het type dan niet automatisch bepaald kan worden.
+In het laatste geval kiest de automatische detectie voor string als er geen functie gebruikt wordt.
 
-Daarnaast zijn er extra formaten. De enige nu is toegevoegde functionaliteit voor GML. Deze accepteert een GML-geometry-string.
+Voorbeeld:
 [source, json]
 ----
-"_geom": { "type": "gml",
-           "gml": "<gml:Polygon|Point|Linestring ... > ... </gml:Polygon|Point|Linestring| ...>"
-         }
+{
+    "getalEen": 15, // Integer
+    "getalTwee": null, // String
+    "getalDrie": ["~#int", null] // Integer
+}
 ----
+
+=== Geometrieën
+Voor geometrieën worden de formaten GML en WKT ondersteund.
+Mogelijk wordt in de toekomst ondersteuning voor GeoJSON toegevoegd.
+
+Dat het bij een attribuut om een geometrie gaat, kan op twee manieren aangegeven worden.
+Heet het attribuut ___geometry__, dan wordt dit automatisch als geometrie geïnterpreteerd.
+Heet het attribuut anders, dan dient bovengenoemde functie __~#geometry__ gebruikt te worden.
+
+Voorbeelden:
+[source, json]
+----
+"_geometry":{
+    "type": "gml",
+    "gml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+            <gml:Point xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"urn:ogc:def:crs:EPSG::28992\">
+                <gml:pos srsDimension=\"2\">154676.328 464046.743</gml:pos>
+            </gml:Point>"
+},
+"andereGeometrie": ["~#geometry", {
+    "type": "wkt",
+    "wkt": "LINESTRING (154676.328 464046.743, 154676.578 464046.743, 154674.285 464048.372)",
+    "srid": 28992
+}]
+----
+
+Het veld __srid__ is optioneel.
+Als het wordt weggelaten, wordt 28992 (Amersfoort / RD New) gebruikt.
 
 === _action: "new"
 
