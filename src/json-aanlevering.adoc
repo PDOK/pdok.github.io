@@ -2,25 +2,26 @@
 Raymond Kroon <raymond.kroon@kadaster.nl>, Bas Duineveld <bas.duineveld@kadaster.nl>
 v2.0 2017-08-11
 
-De PDOK JSON aanleverstandaard. Om aanleveringen te stroomlijnen.
+De PDOK JSON aanleverstandaard is het voorkeursformaat voor aanleveringen van datasets aan PDOK.
 
-Aanlevering is gebaseerd op het volgende:
+De belangrijkste concepten van deze standaard zijn als volgt:
 
-* Basis van alles is een *feature*: de attributen van een object gecombineerd met velden die de mutatieactie
-beschrijven.
+* Basis van alles is een *feature*: een object uit de dataset, gecombineerd met velden die het proces aansturen.
+* De objectvelden in het feature, waaronder de geometrie, worden *attributen* genoemd.
+In de ideale situatie hebben features precies één geometrie en platte attributen.
+Nul of meerdere geometrieën en complexe attributen worden ondersteund, maar leiden zoals verderop beschreven mogelijk
+tot ander gedrag.
 * Een *collection* is een verzameling features van hetzelfde objecttype (bijv. pand).
 Over het algemeen zullen features van één collection dezelfde attribuutnamen hebben, maar hier zitten vooralsnog geen
 beperkingen op.
-* In de ideale situatie hebben features precies één geometrie en platte attributen.
-Nul of meerdere geometrieën en complexe attributen worden ondersteund, maar leiden zoals hieronder beschreven mogelijk
-tot ander gedrag.
-* Van features wordt historie bijgehouden (in het geval van wijzigingen).
+* Van features wordt *historie* bijgehouden: ze kunnen niet alleen worden toegevoegd, maar ook gewijzigd, beëindigd of
+verwijderd.
 
-IMPORTANT: collection-namen en attribuutnamen zijn hoofdlettergevoelig, maar gebruik van twee collection-namen die zich
-enkel in hoofdlettergebruik onderscheiden, is momenteel nog niet mogelijk.
+IMPORTANT: __collection__-namen en attribuutnamen zijn hoofdlettergevoelig, maar gebruik van twee __collection__-namen
+die zich enkel in hoofdlettergebruik onderscheiden, is momenteel nog niet mogelijk.
 
 == Aanlevering
-De aanlevering geschiedt in 1 bestand:
+De aanlevering geschiedt in één bestand:
 
 [source, json, subs="macros"]
 ----
@@ -33,21 +34,125 @@ De aanlevering geschiedt in 1 bestand:
 }
 ----
 
-IMPORTANT: De volgorde is hier belangrijk! Features moet het laatste attribuut zijn.
+IMPORTANT: De volgorde is hier belangrijk! `features` moet het laatste attribuut zijn.
 
 == Features
 Features hebben een aantal verplichte velden, die herkenbaar zijn aan de voorloop-underscore (_):
 
 .Verplichte velden
 [horizontal]
-_action:: new, change, close, delete
-_id:: uniek in _collection, string
-_collection:: string
-_validity:: date-time-string, tijdstip begin geldigheid: __yyyy-MM-dd**T**HH:mm:ss.SSSZ__
+`_action`:: string: `new`, `change`, `close` of `delete`
+`_collection`:: string
+`_id`:: string, uniek in _collection_
+`_validity`:: date-time-string, mutatietijdstip: _yyyy-MM-dd**T**HH:mm:ss.SSSZ_ (enkel bij `new`, `change` en `close`)
+`_current_validity`:: date-time-string, _validity_ van vorige mutatie: _yyyy-MM-dd**T**HH:mm:ss.SSSZ_ (enkel bij
+`change`, `close` en `delete`)
 
 Daarnaast zijn er vrije velden (attributen).
-Dit mogen simple types (_string, numeriek, boolean_) zijn, complex types (arrays of subobjecten), geometrieobjecten (in
-een van de ondersteunde formaten, zie verderop) of voorgedefinieerde functies.
+
+== Acties en historieopbouw
+Zoals hierboven al vermeld, ondersteunt het aanleverformaat niet alleen het eenmalig aanmaken van features, maar ook het
+wijzigen, beëindigen en verwijderen ervan.
+Hierbij wordt historie opgebouwd, die voor gebruikers te raadplegen is via downloadservices.
+Elke mutatie (uitgevoerde actie op een feature) is voorzien van een mutatietijdstip (_validity_).
+Zo ontstaat per feature een tijdlijn, waarbij elke periode tussen twee mutatietijdstippen overeenkomt met één versie
+van het feature.
+
+Na het initiële opvoeren van een feature wordt ter controle steeds het tijdstip van de voorafgaande mutatie meegestuurd
+(_current validity_).
+Zo kan gevalideerd worden dat er geen mutaties op het feature zijn gemist.
+
+Voor het muteren van features zijn de volgende acties gedefinieerd:
+
+- `new` voegt de eerste versie van een feature toe.
+Er wordt gevalideerd dat er geen eerdere versie van dit feature bestaat.
+- `change` wijzigt een feature.
+Hierbij kan gekozen worden of er wel of geen historie opgebouwd dient te worden.
+Wordt een _validity_ meegegeven die later is dan de _current validity_, dan wordt de momenteel actuele versie bewaard
+als historie en een nieuwe versie aan de tijdlijn toegevoegd.
+Dit kan gebruikt worden als er een vanaf een bepaalde ingangsdatum een nieuwe werkelijkheid is.
+De _validity_ wordt gebruikt als overgangsdatum tussen de twee versies.
+Wordt een _validity_ meegegeven die gelijk is aan de _current validity_, dan wordt de momenteel actuele versie
+overschreven zonder dat deze in de historie bewaard blijft.
+Dit kan gebruikt worden als er een technische correctie op het feature dient plaats te vinden, terwijl de werkelijkheid
+ongewijzigd is.
+- `close` beëindigt een feature.
+Dit houdt in dat de momenteel actuele versie bewaard wordt als historie, zonder dat er een nieuwe versie voor in de
+plaats komt.
+Dit kan gebruikt worden als het object in de werkelijkheid met een bepaalde ingangsdatum komt te vervallen.
+- `delete` verwijdert een feature volledig, inclusief alle historie.
+Dit kan gebruikt worden als er in de aanleveringen een fout gemaakt is die niet op een andere manier hersteld kan
+worden.
+Hierna kan hetzelfde feature indien gewenst opnieuw worden aangeboden middels een `new`.
+
+Een voorbeeld om de acties te illustreren:
+[source, json]
+----
+[{
+    "_action": "new",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_validity": "[t1]"
+    "value": "foo"
+},
+{
+    "_action": "change",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t1]",
+    "_validity": "[t2]"
+    "value": "bar"
+},
+{
+    "_action": "change",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t2]",
+    "_validity": "[t2]"
+    "value": "baz"
+},
+{
+    "_action": "change",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t2]",
+    "_validity": "[t3]"
+    "value": "spam"
+},
+{
+    "_action": "close",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t3]",
+    "_validity": "[t4]"
+}]
+----
+
+Dit resulteert in de volgende tijdlijn:
+
+----
+       t1              t2              t3               t4
+-------|---------------|---------------|----------------|-------->
+   X       value=foo       value=baz       value=spam       X
+----
+
+Hierbij staat X voor: er is in deze periode geen versie van dit object.
+
+Tot slot kan het object verwijderd worden met:
+[source, json]
+----
+{
+    "_action": "delete",
+    "_id": "feature1",
+    "_collection": "historie-voorbeeld",
+    "_current_validity": "[t4]"
+}
+----
+
+== Attributen
+De attributen (vrije velden) van een feature mogen simple types (string, numeriek, boolean) zijn, complex types
+(arrays of subobjecten), geometrieobjecten (in een van de ondersteunde formaten, zie verderop) of voorgedefinieerde
+functies.
 Het type wordt bepaald op basis van het eerste voorkomen van een attribuut.
 
 === Functies
@@ -64,16 +169,16 @@ Op dit moment zijn de volgende functies beschikbaar:
 
 .Beschikbare functies
 [horizontal]
-~#moment:: date-time-string (__yyyy-MM-dd**T**HH:mm:ss.SSSZ__) -> DateTime
-~#date:: date-string (__yyyy-MM-dd__) -> LocalDate
+~#moment:: date-time-string (_yyyy-MM-dd**T**HH:mm:ss.SSSZ_) -> DateTime
+~#date:: date-string (_yyyy-MM-dd_) -> LocalDate
 ~#int:: Integer
 ~#boolean:: Boolean
 ~#double:: Double
 ~#geometry:: geometrieobject (zie verderop)
 
-De functies __~#int__, __~#boolean__ en __~#double__ zijn er als alternatief voor de automatische detectie van het
+De functies `~#int`, `~#boolean` en `~#double` zijn er als alternatief voor de automatische detectie van het
 attribuuttype.
-Ze komen vooral van pas als voor een bepaald attribuut lege (null) waardes kunnen voorkomen, omdat het type dan niet
+Ze komen vooral van pas als voor een bepaald attribuut lege (`null`) waardes kunnen voorkomen, omdat het type dan niet
 automatisch bepaald kan worden.
 In het laatste geval kiest de automatische detectie voor string als er geen functie gebruikt wordt.
 
@@ -92,8 +197,8 @@ Voor geometrieën worden de formaten GML en WKT ondersteund.
 Mogelijk wordt in de toekomst ondersteuning voor GeoJSON toegevoegd.
 
 Dat het bij een attribuut om een geometrie gaat, kan op twee manieren aangegeven worden.
-Heet het attribuut ___geometry__, dan wordt dit automatisch als geometrie geïnterpreteerd.
-Heet het attribuut anders, dan dient bovengenoemde functie __~#geometry__ gebruikt te worden.
+Heet het attribuut `_geometry`, dan wordt dit automatisch als geometrie geïnterpreteerd.
+Heet het attribuut anders, dan dient bovengenoemde functie `~#geometry` gebruikt te worden.
 
 Voorbeelden:
 [source, json]
@@ -112,7 +217,7 @@ Voorbeelden:
 }]
 ----
 
-Het veld __srid__ is optioneel.
+Het veld `srid` is optioneel.
 Als het wordt weggelaten, wordt 28992 (Amersfoort / RD New) gebruikt.
 
 ==== Feature zonder geometrie
@@ -120,145 +225,3 @@ Een feature zonder geometrie wordt ook verwerkt.
 De data kan dan echter niet gevisualiseerd worden.
 Wel is deze zichtbaar in eventuele downloadservices.
 Voor de rest is een feature zonder geometrie hetzelfde als een feature met geometrie.
-
-== Acties en historieopbouw
-Door gebruik van het attribuut ___action__ kunnen features worden aangemaakt (__"new"__), gewijzigd (__"change"__),
-afgesloten (__"close"__) en verwijderd (__"delete"__).
-Hierbij wordt historie opgebouwd, die voor gebruikers te raadplegen is via downloadservices.
-Elke actie is voorzien van een handelingstijdstip (___validity__).
-De volgende actie op hetzelfde object bevat het tijdstip van de vorige handeling (___current_validity__), zodat
-gevalideerd kan worden dat er geen acties op het object zijn gemist.
-
-Er volgen voorbeelden voor elk van de vier acties.
-
-=== _action: "new"
-
-[source, json]
-----
-{
-    "_action": "new",
-    "_id": "abc",
-    "_collection": "voorbeeld_verzameling",
-    "_validity": "2010-01-01T00:00:00.000",
-    "_geometry": { "type": "gml",
-               "gml": "<gml:Point srsName=\"urn:ogc:def:crs:EPSG::28992\"><gml:pos>000150.000 000380.000</gml:pos></gml:Point>"
-               },
-    "een_datum_veld": ["~#moment", ["2012-04-23T18:25:43.511"]],
-    "vrij_veld_1": "ik ben een punt",
-    "vrij_veld_2":  "ik ben een lijn",
-      .
-      .
-      .
-
-}
-----
-
-=== _action: "change"
-Aanvullend verplicht veld bij een _change_ is *_current_validity* Deze timestring moet gelijk zijn aan de huidige ___validity__.
-
-NOTE: Een change aanbieden sluit de huidige periode en start een nieuwe.
-
-*Alleen meegeleverde velden worden gewijzigd*
-
-[source, json]
-----
-{
-    "_action": "update",
-    "_id": "abc",
-    "_collection": "voorbeeld_verzameling",
-    "_validity": "2011-01-01T00:00:00.000",
-    "_current_validity": "2010-01-01T00:00:00.000",
-    "vrij_veld_1": "Ik ben een Point",
-    "vrij_veld_2": null , # <1>
-     .
-     .
-     .
-
-}
-----
-
-<1> Als je een veld wilt verwijderen, kun je hem op __null__ zetten.
-
-=== _action: "close"
-_validity zorgt ervoor dat we kunnen prikken in het verleden. Daarom is er *close* om de feature af te sluiten.
-
-[source, json]
-----
-{
-    "_action": "close",
-    "_id": "abc",
-    "_collection": "voorbeeld_verzameling",
-    "_validity": "2012-01-01T00:00:00.000", # <1>
-    "_current_validity": "2011-01-01T00:00:00.000"
-}
-----
-
-<1> Dit is de "sluitingsdatum"
-
-IMPORTANT: Na een close kan een object niet meer gemuteerd worden.
-
-=== _action: "delete"
-Als er een fout gemaakt is in het verleden, kan hiermee de feature gereset worden, zodat alles weer opnieuw aangeboden kan worden.
-
-[source, json]
-----
-{
-    "_action": "delete",
-    "_id": "abc",
-    "_collection": "voorbeeld_verzameling",
-    "_current_validity": "2012-01-01T00:00:00.000"
-}
-----
-
-== Feature-historie
-Gebruik makend van het *_validity*-attribuut kan er een historie bijgehouden worden. Hierdoor kunnen we "prikken" in het verleden.
-
-* Een feature is geldig vanaf de validity-datum bij het aanmaken (__new__). Dit is _"versie 1"_.
-* Bij een change wordt versie 1 afgesloten en gaat de nieuwe versie in, oftewel _"versie 2"_.
-* Dit kan een aantal keer doorgaan, elke keer resulterend in een afgesloten huidige en geopende nieuwe versie.
-* Als laatste kan een feature gesloten (*close*) worden. Hierna is een feature niet meer beschikbaar.
-
-[source, json]
-----
-{
-    "_action": "new",
-    "_id": "feature1",
-    "_collection": "historie-voorbeeld",
-    "_validity": "[t1]"
-    "value": "foo"
-}
-
-{
-    "_action": "change",
-    "_id": "feature1",
-    "_collection": "historie-voorbeeld",
-    "_current_validity": "[t1]",
-    "_validity": "[t2]"
-    "value": "bar"
-}
-
-{
-    "_action": "change",
-    "_id": "feature1",
-    "_collection": "historie-voorbeeld",
-    "_current_validity": "[t2]",
-    "_validity": "[t3]"
-    "value": "baz"
-}
-
-{
-    "_action": "close",
-    "_id": "feature1",
-    "_collection": "historie-voorbeeld",
-    "_current_validity": "[t3]",
-    "_validity": "[t4]"
-}
-----
-
-Dit resulteert in de volgende historie:
-
-----
-    t1           t2               t3           t4
------|------------|----------------|------------|-------------->
- X     value=foo      value=bar       value=baz       X
-----
