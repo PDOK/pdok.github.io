@@ -90,39 +90,39 @@ Een voorbeeld om de acties te illustreren:
 ----
 [{
     "_action": "new",
-    "_id": "feature1",
     "_collection": "historie-voorbeeld",
+    "_id": "feature1",
     "_validity": "[t1]"
     "value": "foo"
 },
 {
     "_action": "change",
-    "_id": "feature1",
     "_collection": "historie-voorbeeld",
+    "_id": "feature1",
     "_current_validity": "[t1]",
     "_validity": "[t2]"
     "value": "bar"
 },
 {
     "_action": "change",
-    "_id": "feature1",
     "_collection": "historie-voorbeeld",
+    "_id": "feature1",
     "_current_validity": "[t2]",
     "_validity": "[t2]"
     "value": "baz"
 },
 {
     "_action": "change",
-    "_id": "feature1",
     "_collection": "historie-voorbeeld",
+    "_id": "feature1",
     "_current_validity": "[t2]",
     "_validity": "[t3]"
     "value": "spam"
 },
 {
     "_action": "close",
-    "_id": "feature1",
     "_collection": "historie-voorbeeld",
+    "_id": "feature1",
     "_current_validity": "[t3]",
     "_validity": "[t4]"
 }]
@@ -136,9 +136,9 @@ Dit resulteert in de volgende tijdlijn:
    X       value=foo       value=baz       value=spam       X
 ----
 
-Hierbij staat X voor: er is in deze periode geen versie van dit object.
+Hierbij staat X voor: er is in deze periode geen versie van dit feature.
 
-Tot slot kan het object verwijderd worden met:
+Tot slot kan het feature verwijderd worden met:
 [source, json]
 ----
 {
@@ -151,8 +151,8 @@ Tot slot kan het object verwijderd worden met:
 
 == Attributen
 De attributen (vrije velden) van een feature mogen simple types (string, numeriek, boolean) zijn, complex types
-(arrays of subobjecten), geometrieobjecten (in een van de ondersteunde formaten, zie verderop) of voorgedefinieerde
-functies.
+(arrays of subobjecten), voorgedefinieerde functies of geometrieobjecten (in een van de ondersteunde formaten, zie
+verderop).
 Het type wordt bepaald op basis van het eerste voorkomen van een attribuut.
 
 === Complex types
