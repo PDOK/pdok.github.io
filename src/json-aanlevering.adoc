@@ -155,6 +155,17 @@ De attributen (vrije velden) van een feature mogen simple types (string, numerie
 functies.
 Het type wordt bepaald op basis van het eerste voorkomen van een attribuut.
 
+=== Complex types
+Complex types kunnen bijvoorbeeld gebruikt worden als een feature subobjecten bevat.
+Een typisch voorbeeld is een pand dat een vlakgeometrie heeft, maar daarnaast één of meer nummeraanduidingen met eigen
+attributen en een puntgeometrie.
+
+Bij het gebruik van complex types dient er rekening mee gehouden te worden dat deze voor de viewservices afgesplitst
+worden als aparte lagen.
+In het bovengenoemde voorbeeld zou een laag `pand` en een laag `pand$nummeraanduiding` ontstaan.
+Om deze reden zijn complex types in sommige delen van de verwerkingspijplijn duurder dan simple types en dienen ze dus
+alleen gebruikt te worden als ze daadwerkelijk een toegevoegde waarde hebben t.o.v. platte attributen.
+
 === Functies
 Een functie kan gebruikt worden als een attribuut omgezet dient te worden naar een ander type dan string, numeriek of
 boolean.
