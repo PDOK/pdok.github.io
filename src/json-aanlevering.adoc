@@ -1,6 +1,6 @@
 = PDOK JSON
 Raymond Kroon <raymond.kroon@kadaster.nl>, Bas Duineveld <bas.duineveld@kadaster.nl>
-v2.0 2017-08-11
+v2.0 2017-08-17
 
 De PDOK JSON aanleverstandaard is het voorkeursformaat voor aanleveringen van datasets aan PDOK.
 
@@ -12,7 +12,7 @@ In de ideale situatie hebben features precies één geometrie en platte attribut
 Nul of meerdere geometrieën en complexe attributen worden ondersteund, maar leiden zoals verderop beschreven mogelijk
 tot ander gedrag.
 * Een *collection* is een verzameling features van hetzelfde objecttype (bijv. pand).
-Over het algemeen zullen features van één collection dezelfde attribuutnamen hebben, maar hier zitten vooralsnog geen
+Over het algemeen zullen features van één _collection_ dezelfde attribuutnamen hebben, maar hier zitten vooralsnog geen
 beperkingen op.
 * Van features wordt *historie* bijgehouden: ze kunnen niet alleen worden toegevoegd, maar ook gewijzigd, beëindigd of
 verwijderd.
@@ -180,12 +180,12 @@ Op dit moment zijn de volgende functies beschikbaar:
 
 .Beschikbare functies
 [horizontal]
-~#moment:: date-time-string (_yyyy-MM-dd**T**HH:mm:ss.SSSZ_) -> DateTime
-~#date:: date-string (_yyyy-MM-dd_) -> LocalDate
-~#int:: Integer
-~#boolean:: Boolean
-~#double:: Double
-~#geometry:: geometrieobject (zie verderop)
+`~#moment`:: date-time-string (_yyyy-MM-dd**T**HH:mm:ss.SSSZ_) -> `DateTime`
+`~#date`:: date-string (_yyyy-MM-dd_) -> `LocalDate`
+`~#int`:: `Integer`
+`~#boolean`:: `Boolean`
+`~#double`:: `Double`
+`~#geometry`:: geometrieobject (zie verderop)
 
 De functies `~#int`, `~#boolean` en `~#double` zijn er als alternatief voor de automatische detectie van het
 attribuuttype.
