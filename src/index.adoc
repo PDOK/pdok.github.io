@@ -1,3 +1,7 @@
-= PDOK
+= PDOK-documentatie
 
-link:json-aanlevering.html[JSON Aanlevering]
+Op deze website is het volgende gedocumenteerd:
+
+- link:json-aanlevering.html[PDOK JSON-aanlevering]
+
+Voor meer documentatie, zie link:http://pdok-ngr.readthedocs.io/[de pagina's van PDOK en NGR op Read the Docs].

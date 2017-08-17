@@ -1,8 +1,8 @@
-= PDOK JSON
+= PDOK JSON-aanlevering
 Raymond Kroon <raymond.kroon@kadaster.nl>, Bas Duineveld <bas.duineveld@kadaster.nl>
 v2.0 2017-08-17
 
-De PDOK JSON aanleverstandaard is het voorkeursformaat voor aanleveringen van datasets aan PDOK.
+De PDOK JSON-aanleverstandaard is het voorkeursformaat voor aanleveringen van datasets aan PDOK.
 
 De belangrijkste concepten van deze standaard zijn als volgt:
 
